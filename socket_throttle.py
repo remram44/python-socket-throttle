@@ -6,7 +6,7 @@ __version__ = '0.1.0'
 
 class Unlimited(object):
     def __init__(self):
-        pass
+        self.total = 0
 
     def make_available(self, amount):
         return
@@ -15,6 +15,7 @@ class Unlimited(object):
         pass
 
     def add_some(self, min_amount, max_amount=None):
+        self.total += max_amount
         return max_amount
 
 
@@ -29,6 +30,7 @@ class LeakyBucket(object):
         bucket has a given `limit` after which operations will block, waiting
         for space in the bucket.
         """
+        self.total = 0
         self._rate = rate
         self._limit = limit
         self._done = 0
@@ -84,6 +86,7 @@ class LeakyBucket(object):
         if available >= min_amount:
             amount = min(available, max_amount)
             self._done += amount
+            self.total += amount
             return amount
 
         self._update()
@@ -93,6 +96,7 @@ class LeakyBucket(object):
         if available >= min_amount:
             amount = min(available, max_amount)
             self._done += amount
+            self.total += amount
             return amount
 
         # Otherwise, sleep long enough for min_amount to be available
@@ -100,6 +104,7 @@ class LeakyBucket(object):
         self._sleep(replenish / self._rate)
 
         self._done += min_amount
+        self.total += min_amount
         return min_amount
 
 

@@ -25,18 +25,21 @@ class TestLeakyBucket(unittest.TestCase):
         self.assertEqual(ret, 150)
         self.assertEqual(bucket.mock_timer, 0)
         self.assertEqual(bucket.mock_sleeps, [])
+        self.assertEqual(bucket.total, 150)
 
         # This is over the limit, and will return a smaller value
         ret = bucket.add_some(10, 150)
         self.assertEqual(ret, 50)
         self.assertEqual(bucket.mock_timer, 0)
         self.assertEqual(bucket.mock_sleeps, [])
+        self.assertEqual(bucket.total, 200)
 
         # Since we are over the limit, we'll have to sleep, and return minimum
         ret = bucket.add_some(10, 100)
         self.assertEqual(ret, 10)
         self.assertEqual(bucket.mock_timer, 10.0)
         self.assertEqual(bucket.mock_sleeps, [10.0])
+        self.assertEqual(bucket.total, 210)
 
         # Wait and replenish 50
         bucket._sleep(50)
@@ -48,6 +51,7 @@ class TestLeakyBucket(unittest.TestCase):
         self.assertEqual(ret, 300)
         self.assertEqual(bucket.mock_timer, 210.0)
         self.assertEqual(bucket.mock_sleeps, [10.0, 50.0, 150.0])
+        self.assertEqual(bucket.total, 510)
 
         # This means we are now over the limit at 300
         # Request a little, it will have to sleep first
@@ -55,6 +59,7 @@ class TestLeakyBucket(unittest.TestCase):
         self.assertEqual(ret, 10)
         self.assertEqual(bucket.mock_timer, 320.0)
         self.assertEqual(bucket.mock_sleeps, [10.0, 50.0, 150.0, 110.0])
+        self.assertEqual(bucket.total, 520)
 
 
 if __name__ == '__main__':
