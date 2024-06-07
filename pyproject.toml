@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "socket-throttle"
+version = "0.1.0"
+description = "Wrapper for sockets letting you limit send/recv bandwidth"
+authors = ["Remi Rampin <remi@rampin.org>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
