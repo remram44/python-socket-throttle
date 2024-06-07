@@ -5,6 +5,16 @@ description = "Wrapper for sockets letting you limit send/recv bandwidth"
 authors = ["Remi Rampin <remi@rampin.org>"]
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/remram44/python-socket-throttle"
+
+keywords = ["socket", "throttle", "bandwidth", "limit"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: System :: Networking",
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
