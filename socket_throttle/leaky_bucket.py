@@ -66,3 +66,7 @@ class LeakyBucket(object):
         self._done += amount
         self.total += amount
         return amount
+
+    def add_unchecked(self, amount):
+        self._done += amount
+        self.total += amount

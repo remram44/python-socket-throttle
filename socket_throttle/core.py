@@ -15,3 +15,6 @@ class Unlimited(object):
             max_amount = min_amount
         self.total += max_amount
         return max_amount
+
+    def add_unchecked(self, amount):
+        self.total += amount

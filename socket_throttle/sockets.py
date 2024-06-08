@@ -53,13 +53,13 @@ class SocketWrapper(object):
     def recv(self, bufsize, flags=0):
         self._recv_bucket.make_available(bufsize)
         data = self._sock.recv(bufsize, flags)
-        self._recv_bucket.add_some(len(data))
+        self._recv_bucket.add_unchecked(len(data))
         return data
 
     def recvfrom(self, bufsize, flags=0):
         self._recv_bucket.make_available(bufsize)
         data, address = self._sock.recvfrom(bufsize, flags)
-        self._recv_bucket.add_some(len(data))
+        self._recv_bucket.add_unchecked(len(data))
         return data, address
 
     def recvfrom_into(self, buffer, nbytes=0, flags=0):
@@ -67,7 +67,7 @@ class SocketWrapper(object):
             nbytes = len(buffer)
         self._recv_bucket.make_available(nbytes)
         nbytes, address = self._sock.recvfrom_into(buffer, nbytes, flags)
-        self._recv_bucket.add_some(nbytes)
+        self._recv_bucket.add_unchecked(nbytes)
         return nbytes, address
 
     def recv_into(self, buffer, nbytes=0, flags=0):
@@ -75,7 +75,7 @@ class SocketWrapper(object):
             nbytes = len(buffer)
         self._recv_bucket.make_available(nbytes)
         nbytes = self._sock.recv_into(buffer, nbytes, flags)
-        self._recv_bucket.add_some(nbytes)
+        self._recv_bucket.add_unchecked(nbytes)
         return nbytes
 
     def recvmsg(self, bufsize, ancbufsize=0, flags=0):
@@ -85,7 +85,7 @@ class SocketWrapper(object):
             ancbufsize,
             flags,
         )
-        self._recv_bucket.add_some(len(data))
+        self._recv_bucket.add_unchecked(len(data))
         return data, ancdata, msg_flags, address
 
     def recvmsg_into(self, buffers, ancbufsize=0, flags=0):
@@ -95,17 +95,17 @@ class SocketWrapper(object):
             ancbufsize,
             flags,
         )
-        self._recv_bucket.add_some(nbytes)
+        self._recv_bucket.add_unchecked(nbytes)
         return nbytes, ancdata, msg_flags, address
 
     def send(self, bytes, flags=0):
         self._send_bucket.make_available(len(bytes))
         nbytes = self._sock.send(bytes, flags)
-        self._send_bucket.add_some(nbytes)
+        self._send_bucket.add_unchecked(nbytes)
         return nbytes
 
     def sendall(self, bytes, flags=0):
-        self._send_bucket.add_some(len(bytes))
+        self._send_bucket.add_unchecked(len(bytes))
         self._sock.sendall(bytes, flags)
 
     def sendfile(self, file, offset=0, count=None):
@@ -142,7 +142,7 @@ class SocketWrapper(object):
     def sendmsg(self, buffers, ancdata=None, flags=0, address=None):
         self._send_bucket.make_empty()
         nbytes = self._sock.sendmsg(buffers, ancdata, flags, address)
-        self._send_bucket.add_some(nbytes)
+        self._send_bucket.add_unchecked(nbytes)
         return nbytes
 
     def sendto(self, *args):
@@ -156,5 +156,5 @@ class SocketWrapper(object):
 
         self._send_bucket.make_available(len(bytes))
         nbytes = self._sock.sendto(bytes, address, flags)
-        self._send_bucket.add_some(nbytes)
+        self._send_bucket.add_unchecked(nbytes)
         return nbytes

@@ -14,7 +14,7 @@ class FileWrapper(object):
     def __next__(self):
         self._read_bucket.make_empty()
         ret = self._file.__next__()
-        self._read_bucket.add_some(ret)
+        self._read_bucket.add_unchecked(ret)
         return ret
 
     close = lambda self: self._file.close
@@ -36,7 +36,7 @@ class FileWrapper(object):
         else:
             self._read_bucket.make_empty()
         ret = self._file.read(size)
-        self._read_bucket.add_some(len(ret))
+        self._read_bucket.add_unchecked(len(ret))
         return ret
 
     def seek(self, cookie, whence=0, /):
@@ -48,5 +48,5 @@ class FileWrapper(object):
     def write(self, buf, /):
         self._write_bucket.make_available(len(buf))
         ret = self._file.write(buf)
-        self._write_bucket.add_some(ret)
+        self._write_bucket.add_unchecked(ret)
         return ret
