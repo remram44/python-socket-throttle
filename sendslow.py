@@ -1,5 +1,5 @@
 import socket
-from socket_throttle import SocketWrapper
+from socket_throttle.sockets import SocketWrapper
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
