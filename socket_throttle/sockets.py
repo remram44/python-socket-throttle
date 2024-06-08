@@ -3,19 +3,18 @@ from .leaky_bucket import LeakyBucket
 
 
 class SocketWrapper(object):
-    def __init__(self, sock, send_bucket, recv_bucket):
-        self._sock = sock
-        self._send_bucket = send_bucket
-        self._recv_bucket = recv_bucket
+    def __init__(self, sock, send=None, recv=None):
+        self._send_bucket = self._recv_bucket = Unlimited()
+        if send:
+            if isinstance(send, (int, float)):
+                send = LeakyBucket(send, send * 0.5)
+            self._send_bucket = send
+        if recv:
+            if isinstance(recv, (int, float)):
+                recv = LeakyBucket(recv, recv * 0.5)
+            self._recv_bucket = recv
 
-    @classmethod
-    def limits(cls, sock, send_limit=None, recv_limit=None):
-        send = recv = Unlimited()
-        if send_limit:
-            send = LeakyBucket(send_limit, send_limit * 0.1)
-        if recv_limit:
-            recv = LeakyBucket(recv_limit, recv_limit * 0.1)
-        return cls(sock, send, recv)
+        self._sock = sock
 
     def close(self):
         self._sock.close()

@@ -1,8 +1,20 @@
+from .core import Unlimited
+from .leaky_bucket import LeakyBucket
+
+
 class FileWrapper(object):
-    def __init__(self, file, write_bucket, read_bucket):
+    def __init__(self, file, write=None, read=None):
+        self._write_bucket = self._read_bucket = Unlimited()
+        if write:
+            if isinstance(write, (int, float)):
+                send = LeakyBucket(write, write * 0.5)
+            self._write_bucket = write
+        if read:
+            if isinstance(read, (int, float)):
+                recv = LeakyBucket(read, read * 0.5)
+            self._read_bucket = read
+
         self._file = file
-        self._write_bucket = write_bucket
-        self._read_bucket = read_bucket
 
     def __enter__(self):
         self._file.__enter__()

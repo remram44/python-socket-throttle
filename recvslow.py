@@ -6,7 +6,7 @@ import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
 sock.connect(('127.0.0.1', 5000))
 
-sock = SocketWrapper.limits(sock, 100, 100)
+sock = SocketWrapper(sock, 100, 100)
 
 while True:
     data = sock.recv(20)
