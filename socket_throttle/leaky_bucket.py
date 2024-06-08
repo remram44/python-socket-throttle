@@ -25,22 +25,28 @@ class LeakyBucket(object):
 
     _sleep = time.sleep
 
-    def make_available(self, amount):
+    def make_available(self, min_amount, max_amount=None):
+        if max_amount is None:
+            max_amount = min_amount
+        assert min_amount <= max_amount
+
         # If available now, return
         available = self._limit - self._done
-        if available >= amount:
-            return
+        if available >= min_amount:
+            return min(available, max_amount)
 
         self._update()
 
         # If available now, return
         available = self._limit - self._done
-        if available >= amount:
-            return
+        if available >= min_amount:
+            return min(available, max_amount)
 
         # Otherwise, sleep long enough
-        replenish = min(amount - available, self._done)
+        replenish = min(min_amount - available, self._done)
         self._sleep(replenish / self._rate)
+
+        return min_amount
 
     def make_empty(self):
         if self._done == 0:
@@ -56,32 +62,7 @@ class LeakyBucket(object):
         Returns the amount that can be used now, sleeping if necessary to
         obtain at least `min_amount`.
         """
-        if max_amount is None:
-            max_amount = min_amount
-        assert min_amount <= max_amount
-
-        # If available now, return
-        available = self._limit - self._done
-        if available >= min_amount:
-            amount = min(available, max_amount)
-            self._done += amount
-            self.total += amount
-            return amount
-
-        self._update()
-
-        # If available now, return
-        available = self._limit - self._done
-        if available >= min_amount:
-            amount = min(available, max_amount)
-            self._done += amount
-            self.total += amount
-            return amount
-
-        # Otherwise, sleep long enough for min_amount to be available
-        replenish = min(min_amount - available, self._done)
-        self._sleep(replenish / self._rate)
-
-        self._done += min_amount
-        self.total += min_amount
-        return min_amount
+        amount = self.make_available(min_amount, max_amount)
+        self._done += amount
+        self.total += amount
+        return amount
