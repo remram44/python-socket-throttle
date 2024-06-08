@@ -31,3 +31,26 @@ class StreamReaderWrapper(object):
         return ret
 
     at_eof = lambda self: self._reader.at_eof()
+
+
+class StreamWriterWrapper(object):
+    def __init__(self, writer, bucket):
+        self._writer = writer
+        self._bucket = bucket
+
+    close = lambda self: self._writer.close()
+    can_write_eof = lambda self: self._writer.can_write_eof()
+    write_eof = lambda self: self._writer.write_eof()
+    transport = property(lambda self: self._writer.transport)
+
+    def get_extra_info(self, default=None):
+        return self._writer.get_extra_info(default)
+
+    def write(self, data):
+        self._writer.write(data)
+
+    def writelines(self, data):
+        self._writer.writelines(data)
+
+    async def drain(self):
+        TODO
