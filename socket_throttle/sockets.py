@@ -45,7 +45,7 @@ class SocketWrapper(object):
     timeout = property(gettimeout)
 
     def getblocking(self):
-        return self._sock.setblocking()
+        return self._sock.getblocking()
 
     def setblocking(self, flag):
         self._sock.setblocking(flag)
