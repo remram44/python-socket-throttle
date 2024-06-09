@@ -16,36 +16,18 @@ class SocketWrapper(object):
 
         self._sock = sock
 
-    def close(self):
-        self._sock.close()
-
-    @property
-    def _closed(self):
-        return self._sock._closed
-
-    @property
-    def family(self):
-        return self._sock.family
-
-    def fileno(self):
-        return self._sock.fileno()
-
-    def getpeername(self):
-        return self._sock.getpeername()
-
-    def getsockname(self):
-        return self._sock.getsockname()
-
-    def gettimeout(self):
-        return self._sock.gettimeout()
+    close = lambda self: self._sock.close()
+    _closed = property(lambda self: self._sock._closed())
+    family = property(lambda self: self._sock.family())
+    fileno = lambda self: self._sock.fileno()
+    getpeername = lambda self: self._sock.getpeername()
+    getsockname = lambda self: self._sock.getsockname()
+    gettimeout = lambda self: self._sock.gettimeout()
+    timeout = property(gettimeout)
+    getblocking = lambda self: self._sock.getblocking()
 
     def settimeout(self, value):
         self._sock.settimeout(value)
-
-    timeout = property(gettimeout)
-
-    def getblocking(self):
-        return self._sock.getblocking()
 
     def setblocking(self, flag):
         self._sock.setblocking(flag)
