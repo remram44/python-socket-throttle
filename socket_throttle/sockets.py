@@ -20,6 +20,10 @@ class SocketWrapper(object):
         self._sock.close()
 
     @property
+    def _closed(self):
+        return self._sock._closed
+
+    @property
     def family(self):
         return self._sock.family
 
